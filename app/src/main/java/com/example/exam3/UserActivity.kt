@@ -60,9 +60,9 @@ class UserActivity : AppCompatActivity() {
             adapter.notifyItemRemoved(it)
             users.removeAt(it)
         }){
-            val intent = Intent(this, AddUserActivity::class.java)
-            intent.putExtra(REQUEST_MODIFY_TYPE,users[it])
-            startActivityForResult(intent, REQUEST_MODIFY_TYPE)
+//            val intent = Intent(this, AddUserActivity::class.java)
+//            intent.putExtra(REQUEST_MODIFY_TYPE,users[it])
+//            startActivityForResult(intent, REQUEST_MODIFY_TYPE)
         }
         rvUsers.layoutManager = GridLayoutManager(this,2)
         rvUsers.adapter = adapter
