@@ -11,15 +11,16 @@ class UserModifyActivity : AppCompatActivity() {
     private lateinit var etFirstName: EditText
     private lateinit var etSecondName: EditText
     private lateinit var etEmail: EditText
+    private lateinit var user: User
     private val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_add_user)
+        setContentView(R.layout.activity_user_modify)
         init()
     }
 
-    private fun init(){
+    private fun init() {
         btnAdd = findViewById(R.id.btnModify)
         etFirstName = findViewById(R.id.etModifyName)
         etSecondName = findViewById(R.id.etModifySecondName)
@@ -27,16 +28,28 @@ class UserModifyActivity : AppCompatActivity() {
         btnAdd.setOnClickListener {
             modify()
         }
+        setModel()
+        setData()
     }
 
-    private fun modify(){
-        if(validateUser()){
-            val user = User(etFirstName.text.trim().toString(),
-                etSecondName.text.trim().toString(),
-                etEmail.text.trim().toString())
+    private fun setModel() {
+        user = intent.getParcelableExtra<User>(UserActivity.MODIFY_MESSAGE) as User
+    }
+
+    private fun setData() {
+        etFirstName.setText(user.name)
+        etSecondName.setText(user.secondName)
+        etEmail.setText(user.email)
+    }
+
+    private fun modify() {
+        if (validateUser()) {
+            user.name = etFirstName.text.trim().toString()
+            user.secondName = etSecondName.text.trim().toString()
+            user.email = etEmail.text.trim().toString()
             val intent = Intent()
-            intent.putExtra(UserActivity.ACCESS_MESSAGE_MODIFY,user)
-            setResult(RESULT_OK,intent)
+            intent.putExtra(UserActivity.MODIFY_MESSAGE, user)
+            setResult(RESULT_OK, intent)
             finish()
         }
     }
@@ -59,7 +72,6 @@ class UserModifyActivity : AppCompatActivity() {
             etEmail.setBackgroundResource(R.color.red)
             valid = false
         }
-
         return valid
     }
 }

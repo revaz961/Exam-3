@@ -13,14 +13,15 @@ class UserActivity : AppCompatActivity() {
         const val REQUEST_ACCESS_TYPE = 1
         const val REQUEST_MODIFY_TYPE = 2
         const val ACCESS_MESSAGE = "user"
-        const val ACCESS_MESSAGE_MODIFY = "modify"
+        const val MODIFY_MESSAGE = "modify"
     }
 
     private val users = mutableListOf<User>()
     private lateinit var adapter: UserRecyclerAdapter
     private lateinit var rvUsers: RecyclerView
     private lateinit var btnAdd: ImageView
-    private lateinit var modifyPosition: Int
+    private lateinit var btnClear: ImageView
+    private var modifyPosition = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,40 +30,53 @@ class UserActivity : AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_ACCESS_TYPE) {
-            if (resultCode == RESULT_OK) {
-                val user = data?.getParcelableExtra<User>(ACCESS_MESSAGE) as User
-                users.add(user)
-                adapter.notifyDataSetChanged()
+        when (requestCode) {
+            REQUEST_ACCESS_TYPE -> {
+                if (resultCode == RESULT_OK) {
+                    val user = data?.getParcelableExtra<User>(ACCESS_MESSAGE) as User
+                    users.add(user)
+                    adapter.notifyDataSetChanged()
+                }
             }
-            super.onActivityResult(requestCode, resultCode, data)
-        }
-        if (requestCode == REQUEST_MODIFY_TYPE) {
-            if (resultCode == RESULT_OK) {
-                val user = data?.getParcelableExtra<User>(ACCESS_MESSAGE) as User
-                users.add(user)
-                adapter.notifyDataSetChanged()
+            REQUEST_MODIFY_TYPE -> {
+                if (resultCode == RESULT_OK) {
+                    val user = data?.getParcelableExtra<User>(MODIFY_MESSAGE) as User
+                    if(users[modifyPosition] != user) {
+                        users[modifyPosition] = user
+                        adapter.notifyItemChanged(modifyPosition)
+                    }
+                }
             }
-            super.onActivityResult(requestCode, resultCode, data)
+            else -> super.onActivityResult(requestCode, resultCode, data)
         }
     }
 
     private fun init(){
         btnAdd = findViewById(R.id.btnAdd)
+        btnClear = findViewById(R.id.btnClear)
         btnAdd.setOnClickListener {
             val intent = Intent(this, AddUserActivity::class.java)
             startActivityForResult(intent,REQUEST_ACCESS_TYPE)
         }
 
+        btnClear.setOnClickListener {
+            if(users.isNotEmpty()) {
+                adapter.notifyItemRangeRemoved(0, users.size)
+                users.clear()
+            }
+        }
+
         rvUsers = findViewById(R.id.rvUsers)
         setData()
+
         adapter = UserRecyclerAdapter(users,{
             adapter.notifyItemRemoved(it)
             users.removeAt(it)
         }){
-//            val intent = Intent(this, AddUserActivity::class.java)
-//            intent.putExtra(REQUEST_MODIFY_TYPE,users[it])
-//            startActivityForResult(intent, REQUEST_MODIFY_TYPE)
+            modifyPosition = it
+            val intent = Intent(this, UserModifyActivity::class.java)
+            intent.putExtra(MODIFY_MESSAGE,users[it])
+            startActivityForResult(intent, REQUEST_MODIFY_TYPE)
         }
         rvUsers.layoutManager = GridLayoutManager(this,2)
         rvUsers.adapter = adapter
