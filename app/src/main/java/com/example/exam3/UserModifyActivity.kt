@@ -20,20 +20,22 @@ class UserModifyActivity : AppCompatActivity() {
     }
 
     private fun init(){
-        btnAdd = findViewById(R.id.btnAddUser)
-        etFirstName = findViewById(R.id.etName)
-        etSecondName = findViewById(R.id.etSecondName)
-        etEmail = findViewById(R.id.etEmail)
-        addUser()
+        btnAdd = findViewById(R.id.btnModify)
+        etFirstName = findViewById(R.id.etModifyName)
+        etSecondName = findViewById(R.id.etModifySecondName)
+        etEmail = findViewById(R.id.etModifyEmail)
+        btnAdd.setOnClickListener {
+            modify()
+        }
     }
 
-    private fun addUser(){
+    private fun modify(){
         if(validateUser()){
             val user = User(etFirstName.text.trim().toString(),
                 etSecondName.text.trim().toString(),
                 etEmail.text.trim().toString())
             val intent = Intent()
-            intent.putExtra(UserActivity.ACCESS_MESSAGE,user)
+            intent.putExtra(UserActivity.ACCESS_MESSAGE_MODIFY,user)
             setResult(RESULT_OK,intent)
             finish()
         }
