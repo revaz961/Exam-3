@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/userFragment">
+
+    <fragment
+        android:id="@+id/userFragment"
+        android:name="com.example.exam3.UserFragment"
+        android:label="fragment_user"
+        tools:layout="@layout/fragment_user" >
+        <action
+            android:id="@+id/action_userFragment_to_userAddFragment"
+            app:destination="@id/userAddFragment" />
+        <action
+            android:id="@+id/action_userFragment_to_userModifyFragment"
+            app:destination="@id/userModifyFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/userAddFragment"
+        android:name="com.example.exam3.UserAddFragment"
+        android:label="fragment_user_add"
+        tools:layout="@layout/fragment_user_add" >
+        <action
+            android:id="@+id/action_userAddFragment_to_userFragment"
+            app:destination="@id/userFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/userModifyFragment"
+        android:name="com.example.exam3.UserModifyFragment"
+        android:label="fragment_user_modify"
+        tools:layout="@layout/fragment_user_modify" >
+        <action
+            android:id="@+id/action_userModifyFragment_to_userFragment"
+            app:destination="@id/userFragment" />
+    </fragment>
+</navigation>

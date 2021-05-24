@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.exam3.databinding.UserItemBinding
 
 class UserRecyclerAdapter(
     private val items: MutableList<User>,
@@ -13,11 +14,11 @@ class UserRecyclerAdapter(
     val update: (Int) -> Unit,
 ) : RecyclerView.Adapter<UserRecyclerAdapter.ItemViewHolder>() {
 
+    private lateinit var binding:UserItemBinding
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
-        val itemView =
-            LayoutInflater.from(parent.context).inflate(R.layout.user_item, parent, false)
-        return ItemViewHolder(itemView)
+        binding = UserItemBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+        return ItemViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
@@ -26,16 +27,16 @@ class UserRecyclerAdapter(
 
     override fun getItemCount() = items.size
 
-    inner class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ItemViewHolder(binding: UserItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind() {
-            itemView.findViewById<TextView>(R.id.tvName).text = items[adapterPosition].name
-            itemView.findViewById<TextView>(R.id.tvSecondName).text =
+            binding.tvName.text = items[adapterPosition].name
+            binding.tvSecondName.text =
                 items[adapterPosition].secondName
-            itemView.findViewById<TextView>(R.id.tvEmail).text = items[adapterPosition].email
-            itemView.findViewById<ImageView>(R.id.btnDelete).setOnClickListener {
+            binding.tvEmail.text = items[adapterPosition].email
+            binding.btnDelete.setOnClickListener {
                 delete(adapterPosition)
             }
-            itemView.findViewById<ImageView>(R.id.btnUpdate).setOnClickListener {
+            binding.btnUpdate.setOnClickListener {
                 update(adapterPosition)
             }
         }

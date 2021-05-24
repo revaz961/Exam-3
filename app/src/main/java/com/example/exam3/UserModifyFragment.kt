@@ -1,12 +1,22 @@
 package com.example.exam3
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
+import androidx.fragment.app.setFragmentResult
+import androidx.navigation.fragment.findNavController
+import com.example.exam3.databinding.FragmentUserModifyBinding
 
-class UserModifyActivity : AppCompatActivity() {
+class UserModifyFragment : Fragment() {
+
+    private lateinit var binding:FragmentUserModifyBinding
     private lateinit var btnAdd: Button
     private lateinit var etFirstName: EditText
     private lateinit var etSecondName: EditText
@@ -14,17 +24,20 @@ class UserModifyActivity : AppCompatActivity() {
     private lateinit var user: User
     private val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_user_modify)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentUserModifyBinding.inflate(inflater,container,false)
         init()
+        return binding.root
     }
 
     private fun init() {
-        btnAdd = findViewById(R.id.btnModify)
-        etFirstName = findViewById(R.id.etModifyName)
-        etSecondName = findViewById(R.id.etModifySecondName)
-        etEmail = findViewById(R.id.etModifyEmail)
+        btnAdd = binding.btnModify
+        etFirstName = binding.etModifyName
+        etSecondName = binding.etModifySecondName
+        etEmail = binding.etModifyEmail
         btnAdd.setOnClickListener {
             modify()
         }
@@ -33,7 +46,7 @@ class UserModifyActivity : AppCompatActivity() {
     }
 
     private fun setModel() {
-        user = intent.getParcelableExtra<User>(UserActivity.MODIFY_MESSAGE) as User
+        user = arguments?.getParcelable<User>(UserFragment.ACCESS_MESSAGE)!!
     }
 
     private fun setData() {
@@ -47,10 +60,8 @@ class UserModifyActivity : AppCompatActivity() {
             user.name = etFirstName.text.trim().toString()
             user.secondName = etSecondName.text.trim().toString()
             user.email = etEmail.text.trim().toString()
-            val intent = Intent()
-            intent.putExtra(UserActivity.MODIFY_MESSAGE, user)
-            setResult(RESULT_OK, intent)
-            finish()
+            setFragmentResult(UserFragment.MODIFY_MESSAGE, bundleOf(UserFragment.ACCESS_MESSAGE to user))
+            findNavController().navigateUp()
         }
     }
 
